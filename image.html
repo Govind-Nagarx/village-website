@@ -1,0 +1,1070 @@
+<!doctype html>
+<html lang="hi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>विकास संगठन</title>
+    <link rel="icon" href="image/logo.png" type="image/.png" />
+      <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #263132, #20262e);
+        min-height: 100vh;
+        color: #fff;
+      }
+
+      /* Navbar */
+      nav {
+        background: #004080;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      .nav-container {
+        max-width: 1100px;
+        margin: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+      }
+      .logo-text {
+        font-size: 20px;
+        font-weight: bold;
+        color: #fff;
+      }
+      .nav-links {
+        display: flex;
+        gap: 20px;
+      }
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        position: relative;
+        overflow: visible;
+        transition: color 0.3s;
+      }
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 0;
+        background-color: #ffd700;
+        transition: width 0.3s;
+      }
+      .nav-links a:hover::after,
+      .nav-links a.active::after {
+        width: 100%;
+      }
+      .nav-links a:hover,
+      .nav-links a.active {
+        color: #ffd700;
+      }
+
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+      }
+      .hamburger div {
+        width: 25px;
+        height: 3px;
+        background: white;
+        transition: all 0.3s;
+      }
+      .hamburger.active div:nth-child(1) {
+        transform: rotate(45deg) translateY(8px);
+      }
+      .hamburger.active div:nth-child(2) {
+        opacity: 0;
+      }
+      .hamburger.active div:nth-child(3) {
+        transform: rotate(-45deg) translateY(-8px);
+      }
+
+      .theme-toggle {
+        background: #f9f9f9;
+        border: none;
+        padding: 6px 12px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-weight: bold;
+        margin-left: 10px;
+      }
+      .theme-toggle:hover {
+        background: #111a95;
+        color: #fff;
+      }
+
+      /* Gallery */
+      h1 {
+        text-align: center;
+        margin: 40px 0;
+        text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+      }
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 0 20px 40px 20px;
+      }
+      .gallery-item {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+        background-color: rgba(255, 255, 255, 0.95);
+        color: #333;
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+      }
+      .gallery-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
+      }
+      .gallery-item img,
+      .gallery-item video {
+        width: 100%;
+        aspect-ratio: 16/9;
+        object-fit: cover;
+        border-bottom: 2px solid #eee;
+        transition: transform 0.3s;
+      }
+      .gallery-item:hover img,
+      .gallery-item:hover video {
+        transform: scale(1.05);
+      }
+      .caption {
+        padding: 12px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 16px;
+      }
+      .download-btn {
+        margin: 0 auto 15px auto;
+        padding: 6px 14px;
+        background: #004080;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: 0.3s;
+      }
+      .download-btn:hover {
+        background: #ffd700;
+        color: #000;
+      }
+      footer {
+        background: #222;
+        color: white;
+        text-align: center;
+        padding: 15px;
+        font-size: 14px;
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          position: absolute;
+          top: 60px;
+          right: 0;
+          background: #004080;
+          flex-direction: column;
+          width: 200px;
+          padding: 15px 0;
+          display: none;
+        }
+        .nav-links.active {
+          display: flex;
+        }
+        .hamburger {
+          display: flex;
+        }
+        .gallery-item img,
+        .gallery-item video {
+          aspect-ratio: 4/3;
+        }
+      }
+      @media (max-width: 480px) {
+        .gallery-item img,
+        .gallery-item video {
+          aspect-ratio: 1/1;
+        }
+        h1 {
+          font-size: 24px;
+        }
+      }
+
+      .gallery-item:has(img[alt="Ending"]) {
+        padding-bottom: 0;
+        height: auto !important;
+      }
+
+      .gallery-item:has(img[alt="Ending"]) img {
+        border-bottom: none; /* नीचे की border भी हट जाएगी */
+      }
+      /* Supabase Dynamic Gallery */
+#gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  padding: 10px 0 30px 0;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  color: black;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+
+.card div {
+  padding: 8px;
+  font-weight: bold;
+  font-size: 14px;
+}
+.gallery-item {
+  display: flex;
+  align-items: flex-end;
+}
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* Upar 5 images */
+  gap: 20px;
+}
+
+/* Mobile ke liye responsive */
+@media (max-width: 900px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+#gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+.card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: center;
+  color: black;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+}
+
+.card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.card div {
+  padding: 6px;
+  font-weight: bold;
+}#gallery {
+  order: 2;
+}
+.upload-box {
+  max-width: 400px;
+  margin: 30px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  color: black;
+}
+
+.upload-box h2 {
+  margin-bottom: 15px;
+  color: #004080;
+}
+
+.upload-box input[type="text"],
+.upload-box input[type="file"] {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.upload-box input[type="file"] {
+  background: #f5f5f5;
+  cursor: pointer;
+}
+
+.upload-box button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #004080;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.upload-box button:hover {
+  background: #ffd700;
+  color: black;
+  transform: scale(1.03);
+}.download-btn {
+  display: inline-block;
+  margin: 8px 0 12px 0;
+  padding: 6px 12px;
+  background: #004080;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 13px;
+  transition: 0.3s;
+}
+
+.download-btn:hover {
+  background: #ffd700;
+  color: black;
+}.preview-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.9);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.preview-modal img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 10px;
+}
+
+.preview-modal.active {
+  display: flex;
+  cursor: zoom-out;
+}
+
+.download-btn {
+  margin: 8px 0 12px 0;
+  padding: 6px 12px;
+  background: #004080;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <div class="nav-container">
+        <div class="logo-text">विकास संगठन फुंदिया</div>
+        <div class="nav-links" id="navLinks">
+          <a href="index.html">होम</a>
+          <a href="detail.html">हमारे बारे में</a>
+          <a href="image.html" class="active">गैलरी</a>
+          <a href="gavimage.html">गाँव</a>
+        </div>
+        <div style="display: flex; align-items: center">
+          <!-- <button class="theme-toggle" onclick="toggleTheme()">🌙/☀️</button> -->
+          <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <h1>PHUNDIYA GALLERY</h1>
+<div class="upload-box">
+<h2>Upload Image</h2>
+
+<input type="text" id="nameInput" placeholder="About Image">
+<br><br>
+
+<input type="file" id="fileInput">
+<button id="btn">Upload</button>
+
+
+
+
+
+
+
+
+
+</div>
+<div id="gallery"></div>
+    <div class="gallery">
+      <!-- image -->
+
+
+
+
+
+      <div
+        class="gallery-item"
+        style="height: auto; padding-bottom: 0; display: block"
+      >
+        <a href="image/26 1.jpeg">
+          <img
+            src="image/26 1.jpeg"
+            loading="lazy"
+            alt="Ending"
+            style="display: block; border-bottom: none"
+          />
+        </a>
+      </div>
+
+<div
+        class="gallery-item"
+        style="height: auto; padding-bottom: 0; display: block"
+      >
+        <a href="image/26 2.jpeg">
+          <img
+            src="image/26 2.jpeg"
+            loading="lazy"
+            alt="Ending"
+            style="display: block; border-bottom: none"
+          />
+        </a>
+         <!-- <div class="caption"></div> -->
+      </div>
+      
+
+
+
+
+
+      <div
+        class="gallery-item"
+        style="height: auto; padding-bottom: 0; display: block"
+      >
+        <a href="image/dashara1.jpg">
+          <img
+            src="image/dashara1.jpg"
+            loading="lazy"
+            alt="Ending"
+            style="display: block; border-bottom: none"
+          />
+        </a>
+      </div>
+
+      <div
+        class="gallery-item"
+        style="height: auto; padding-bottom: 0; display: block"
+      >
+        <a href="image/dashara.jpg">
+          <img
+            src="image/dashara.jpg"
+            loading="lazy"
+            alt="Ending"
+            style="display: block; border-bottom: none"
+          />
+        </a>
+      </div>
+
+      <div class="gallery-item" style="text-align: center">
+        <!-- वीडियो -->
+        <video
+          src="image/garba3.mp4"
+          loading="lazy"
+          controls
+          muted
+          style="max-width: 100%; border-radius: 10px"
+        ></video>
+        <!-- <div class="caption"></div> -->
+      </div>
+
+      <div class="gallery-item" style="text-align: center">
+        <!-- वीडियो -->
+        <video
+          src="image/garba2.mp4"
+          loading="lazy"
+          controls
+          muted
+          style="max-width: 100%; border-radius: 10px"
+        ></video>
+      </div>
+
+      <div class="gallery-item">
+        <video src="image/garba.mp4" loading="lazy" controls muted></video>
+
+        <a href="image/garba.mp4"></a>
+      </div>
+      <div class="gallery-item">
+        <iframe
+          width="300"
+          height="150"
+          src="https://www.youtube.com/embed/_C0x6A8vdV0"
+          title="mata ji arti (वीडियो)"
+          frameborder="0"
+          allow="
+            accelerometer;
+            autoplay;
+            clipboard-write;
+            encrypted-media;
+            gyroscope;
+            picture-in-picture;
+          "
+          allowfullscreen
+        >
+        </iframe>
+        <div class="caption">mata ji arti (वीडियो)</div>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/1.jpg"
+          ><img src="image/1.jpg" loading="lazy" alt="Ganesh Ji"
+        /></a>
+        <!-- <div class="caption">श्री गणेश जी</div> -->
+        <a href="image/1.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/2.jpg"
+          ><img src="image/2.jpg" loading="lazy" alt="Hanuman Ji"
+        /></a>
+        <!-- <div class="caption">हनुमान जी</div> -->
+        <a href="image/2.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <video src="image/10.mp4" controls muted></video>
+        <!-- <div class="caption">राम भक्त हनुमान (वीडियो)</div> -->
+        <a href="image/10.mp4"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/4.jpg"
+          ><img src="image/4.jpg" loading="lazy" alt="Mandir Entrance"
+        /></a>
+        <!-- <div class="caption">मंदिर प्रवेश द्वार</div> -->
+        <a href="image/4.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/5.jpg"
+          ><img src="image/5.jpg" loading="lazy" alt="Decoration"
+        /></a>
+        <!-- <div class="caption">सजावट</div> -->
+        <a href="image/5.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/6.jpg"
+          ><img src="image/6.jpg" loading="lazy" alt="Hanuman Ji Statue"
+        /></a>
+        <!-- <div class="caption">हनुमान जी की प्रतिमा</div> -->
+        <a href="image/6.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/7.jpg"
+          ><img src="image/7.jpg" loading="lazy" alt="Deepak"
+        /></a>
+        <!-- <div class="caption">दीपक सजावट</div> -->
+        <a href="image/7.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/8.jpg"
+          ><img src="image/8.jpg" loading="lazy" alt="Pooja"
+        /></a>
+        <!-- <div class="caption">आरती एवं पूजा</div> -->
+        <a href="image/8.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/9.jpg"
+          ><img src="image/9.jpg" loading="lazy" alt="Bhakt"
+        /></a>
+        <!-- <div class="caption">भक्तों का दर्शन</div> -->
+        <a href="image/9.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/11.jpg"
+          ><img src="image/11.jpg" loading="lazy" alt="Stage"
+        /></a>
+        <!-- <div class="caption">मंच सजावट</div> -->
+        <a href="image/11.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/12.jpg"
+          ><img src="image/12.jpg" loading="lazy" alt="Welcome Gate"
+        /></a>
+        <!-- <div class="caption">स्वागत द्वार</div> -->
+        <a href="image/12.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/13.jpg"
+          ><img src="image/13.jpg" loading="lazy" alt="Flowers"
+        /></a>
+        <!-- <div class="caption">फूलों की सजावट</div> -->
+        <a href="image/13.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/14.jpg"
+          ><img src="image/14.jpg" loading="lazy" alt="Lighting"
+        /></a>
+        <div class="caption"></div>
+        <a href="image/14.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/15.jpg"
+          ><img src="image/15.jpg" loading="lazy" alt="Temple"
+        /></a>
+        <!-- <div class="caption">मंदिर दृश्य</div> -->
+        <a href="image/15.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <video src="image/16.mp4" controls muted></video>
+        <!-- <div class="caption">पूजा वीडियो</div> -->
+        <a href="image/16.mp4"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/17.jpg"
+          ><img src="image/17.jpg" loading="lazy" alt="Festival"
+        /></a>
+        <!-- <div class="caption">त्योहार का दृश्य</div> -->
+        <a href="image/17.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/18.jpg"
+          ><img src="image/18.jpg" loading="lazy" alt="Prasad"
+        /></a>
+        <!-- <div class="caption">प्रसाद वितरण</div> -->
+        <a href="image/18.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <video src="image/19.mp4" controls muted></video>
+        <!-- <div class="caption">भक्ति वीडियो</div> -->
+        <a href="image/19.mp4"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/20.jpg"
+          ><img src="image/20.jpg" loading="lazy" alt="People"
+        /></a>
+        <!-- <div class="caption">भक्तगण</div> -->
+        <a href="image/20.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/21.jpg"
+          ><img src="image/21.jpg" loading="lazy" alt="Stage Program"
+        /></a>
+        <!-- <div class="caption">मंच कार्यक्रम</div> -->
+        <a href="image/21.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/22.jpg"
+          ><img src="image/22.jpg" loading="lazy" alt="Dance"
+        /></a>
+        <!-- <div class="caption">सांस्कृतिक कार्यक्रम</div> -->
+        <a href="image/22.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/23.jpg"
+          ><img src="image/23.jpg" loading="lazy" alt="Devotees"
+        /></a>
+        <!-- <div class="caption">सामूहिक दर्शन</div> -->
+        <a href="image/23.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/24.jpg"
+          ><img src="image/24.jpg" loading="lazy" alt="Food"
+        /></a>
+        <!-- <div class="caption">भोजन प्रसादी</div> -->
+        <a href="image/24.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/25.jpg"
+          ><img src="image/25.jpg" loading="lazy" alt="Stage"
+        /></a>
+        <!-- <div class="caption">सजाया हुआ मंच</div> -->
+        <a href="image/25.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/26.jpg"
+          ><img src="image/26.jpg" loading="lazy" alt="Crowd"
+        /></a>
+        <!-- <div class="caption">श्रद्धालु</div> -->
+        <a href="image/26.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/27.jpg"
+          ><img src="image/27.jpg" loading="lazy" alt="Mandap"
+        /></a>
+        <!-- <div class="caption">मंडप सजावट</div> -->
+        <a href="image/27.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/28.jpg"
+          ><img src="image/28.jpg" loading="lazy" alt="Ending"
+        /></a>
+        <!-- <div class="caption">कार्यक्रम समापन</div> -->
+        <a href="image/28.jpg"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/Screenshot 2025-09-28 085145.png"
+          ><img
+            src="image/Screenshot 2025-09-28 085145.png"
+            loading="lazy"
+            alt="Ending"
+        /></a>
+        <div class="caption">आज शिक्षक दिवस के शुभ मौके पर</div>
+        <a href="image/Screenshot 2025-09-28 085145.png"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/Screenshot 2025-09-28 085157.png"
+          ><img
+            src="image/Screenshot 2025-09-28 085157.png"
+            loading="lazy"
+            alt="Ending"
+        /></a>
+        <div class="caption">शासकीय शाला ग्राम फुन्दिया</div>
+        <a href="image/Screenshot 2025-09-28 085157.png"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/Screenshot 2025-09-28 085215.png"
+          ><img
+            src="image/Screenshot 2025-09-28 085215.png"
+            loading="lazy"
+            alt="Ending"
+        /></a>
+        <div class="caption">
+          में स्कूल के पूर्व छात्रों द्वारा अपने गुरुजनों का स्वागत किया गया तथा
+          स्कूल के
+        </div>
+        <a href="image/Screenshot 2025-09-28 085215.png"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/Screenshot 2025-09-28 085227.png"
+          ><img
+            src="image/Screenshot 2025-09-28 085227.png"
+            loading="lazy"
+            alt="Ending"
+        /></a>
+        <div class="caption">
+          छात्रों को बेहतरीन शिक्षा मिले इसके लिए बनाए गए संगठन
+        </div>
+        <a href="image/Screenshot 2025-09-28 085227.png"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/Screenshot 2025-09-28 085248.png"
+          ><img
+            src="image/Screenshot 2025-09-28 085248.png"
+            loading="lazy"
+            alt="Ending"
+        /></a>
+        <div class="caption">
+          के बारे में शिक्षको को भी अवगत कराया गया हमारे साथ
+        </div>
+        <a href="image/Screenshot 2025-09-28 085248.png"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/Screenshot 2025-09-28 085302.png"
+          ><img
+            src="image/Screenshot 2025-09-28 085302.png"
+            loading="lazy"
+            alt="Ending"
+        /></a>
+        <div class="caption">
+          संगठन के बाकी सदस्य भी सोशल मीडिया के माध्यम से बने हुए थे
+        </div>
+        <a href="image/Screenshot 2025-09-28 085302.png"></a>
+      </div>
+
+      <div class="gallery-item">
+        <a href="image/Screenshot 2025-09-28 090246.png"
+          ><img
+            src="image/Screenshot 2025-09-28 090246.png"
+            loading="lazy"
+            alt="Ending"
+        /></a>
+        <div class="caption">
+          <p style="font-size: 10px">
+            आज हमारे संगठन ने एक ओर कदम आगे बढ़ाया गांव के स्कूल में स्वच्छ पानी
+            कि टंकी कि व्यवस्था कि गांव के युवा साथियों के साथ मिलकर इस काम को
+            पूरा किया
+          </p>
+        </div>
+        <a href="image/Screenshot 2025-09-28 090246.png"></a>
+      </div>
+
+      <div
+        class="gallery-item"
+        style="height: auto; padding-bottom: 0; display: block"
+      >
+        <a href="image/Screenshot 2025-09-28 090841.png">
+          <img
+            src="image/Screenshot 2025-09-28 090841.png"
+            loading="lazy"
+            alt="Ending"
+            style="display: block; border-bottom: none"
+          />
+        </a>
+      </div>
+    </div>
+<div class="preview-modal" id="previewModal">
+  <img id="previewImg">
+</div>
+    <footer>
+      <p>© 2025 विकास संगठन | सर्वाधिकार सुरक्षित</p>
+    </footer>
+
+    <script>
+      function toggleMenu() {
+        document.getElementById("hamburger").classList.toggle("active");
+        document.getElementById("navLinks").classList.toggle("active");
+      }
+      function toggleTheme() {
+        document.body.classList.toggle("light");
+      }
+      
+  const supabaseUrl = "https://wxhaiwpexdzkscitzllm.supabase.co";
+  const supabaseKey = "sb_publishable_8TmcAQaZrw8nS_7TTpsxYA_8gw_8Tlk";
+
+  const client = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+  async function upload() {
+    const file = document.getElementById("fileInput").files[0];
+    const name = document.getElementById("nameInput").value;
+
+    if (!file) {
+      alert("Select file first");
+      return;
+    }
+
+    if (!name) {
+      alert("Enter name");
+      return;
+    }
+
+    const fileName = Date.now() + "-" + file.name;
+
+    const { error: uploadError } = await client.storage
+      .from("images")
+      .upload(fileName, file);
+
+    if (uploadError) {
+      console.log(uploadError);
+      alert("Upload failed");
+      return;
+    }
+
+    const { data } = client.storage
+      .from("images")
+      .getPublicUrl(fileName);
+
+    const imageUrl = data.publicUrl;
+
+    const { error: dbError } = await client
+      .from("photos")
+      .insert([{ 
+        name: name,
+        image_url: imageUrl 
+      }]);
+
+    if (dbError) {
+      console.log(dbError);
+      alert("DB insert failed");
+      return;
+    }
+
+    alert("Success ✅");
+
+    document.getElementById("nameInput").value = "";
+    document.getElementById("fileInput").value = "";
+
+    loadImages();
+  }
+
+async function loadImages() {
+  const { data, error } = await client
+    .from("photos")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  const gallery = document.getElementById("gallery");
+  gallery.innerHTML = "";
+
+  data.forEach(row => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const img = document.createElement("img");
+    img.src = row.image_url;
+
+    const label = document.createElement("div");
+    label.innerText = row.name;
+
+    /* ✅ DOWNLOAD BUTTON */
+    const downloadBtn = document.createElement("a");
+    downloadBtn.href = row.image_url;
+    downloadBtn.download = row.name;  // file name
+    downloadBtn.innerText = "view";
+    downloadBtn.className = "download-btn";
+
+    card.appendChild(img);
+    card.appendChild(label);
+    card.appendChild(downloadBtn);
+
+    gallery.appendChild(card);
+  });
+}
+
+  document.getElementById("btn").addEventListener("click", upload);
+
+  loadImages();
+
+
+
+const previewModal = document.getElementById("previewModal");
+const previewImg = document.getElementById("previewImg");
+
+function openPreview(src) {
+  previewImg.src = src;
+  previewModal.classList.add("active");
+}
+
+previewModal.addEventListener("click", () => {
+  previewModal.classList.remove("active");
+});
+const img = document.createElement("img");
+img.src = row.image_url;
+img.onclick = () => openPreview(row.image_url);
+const downloadBtn = document.createElement("button");
+downloadBtn.innerText = "Download";
+downloadBtn.className = "download-btn";
+
+downloadBtn.onclick = () => {
+  window.open(row.image_url, "_blank");
+};
+
+
+
+async function forceDownload(url, fileName = "image") {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+
+    window.URL.revokeObjectURL(blobUrl);
+    a.remove();
+  } catch (err) {
+    console.log("Download error:", err);
+    alert("Download failed ❌");
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    </script>
+  </body>
+</html>

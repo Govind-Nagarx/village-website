@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FundPay - Payment History</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,#0f172a,#1d4ed8);
+    padding:20px;
+    color:#111827;
+}
+
+.container{
+    width:100%;
+    max-width:720px;
+    margin:auto;
+}
+
+/* ================= HISTORY ================= */
+
+.history-card{
+    background:#fff;
+    border-radius:22px;
+    padding:26px;
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
+}
+
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.header h1{
+    font-size:28px;
+}
+
+.header p{
+    color:#6b7280;
+    font-size:14px;
+    margin-top:5px;
+}
+
+.make-payment{
+    border:none;
+    background:#2563eb;
+    color:#fff;
+    padding:12px 18px;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.make-payment:hover{
+    background:#1d4ed8;
+}
+
+/* ================= PAYMENT ITEMS ================= */
+
+.payment-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.payment-item{
+    border:1px solid #e5e7eb;
+    border-radius:15px;
+    padding:15px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.user{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.avatar{
+    width:46px;
+    height:46px;
+    min-width:46px;
+    border-radius:50%;
+    background:#dbeafe;
+    color:#2563eb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    font-size:18px;
+}
+
+.user-name{
+    font-weight:bold;
+    font-size:15px;
+}
+
+.payment-date{
+    color:#6b7280;
+    font-size:12px;
+    margin-top:4px;
+}
+
+.status{
+    display:inline-block;
+    margin-top:6px;
+    padding:4px 8px;
+    border-radius:20px;
+    background:#dcfce7;
+    color:#15803d;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.payment-amount{
+    font-size:17px;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+.loading,
+.empty,
+.error{
+    text-align:center;
+    padding:40px 15px;
+    color:#6b7280;
+}
+
+/* ================= FORM ================= */
+
+.payment-page{
+    display:none;
+}
+
+.form-card{
+    max-width:450px;
+    margin:auto;
+    background:#fff;
+    padding:28px;
+    border-radius:22px;
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
+}
+
+.back-btn{
+    border:none;
+    background:#f3f4f6;
+    color:#111827;
+    padding:9px 13px;
+    border-radius:9px;
+    cursor:pointer;
+    margin-bottom:20px;
+}
+
+.form-card h2{
+    text-align:center;
+    font-size:26px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#6b7280;
+    font-size:14px;
+    margin-top:7px;
+    margin-bottom:25px;
+}
+
+.input-group{
+    margin-bottom:17px;
+}
+
+label{
+    display:block;
+    font-size:14px;
+    font-weight:bold;
+    margin-bottom:7px;
+}
+
+input,
+textarea{
+    width:100%;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    padding:13px;
+    font-size:15px;
+    outline:none;
+}
+
+input:focus,
+textarea:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,.1);
+}
+
+textarea{
+    height:90px;
+    resize:none;
+}
+
+.submit-btn{
+    width:100%;
+    border:none;
+    background:#2563eb;
+    color:#fff;
+    padding:15px;
+    border-radius:11px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.submit-btn:hover{
+    background:#1d4ed8;
+}
+
+.submit-btn:disabled{
+    opacity:.7;
+    cursor:not-allowed;
+}
+
+/* ================= SUCCESS ================= */
+
+.success-page{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.8);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:100;
+}
+
+.success-box{
+    width:100%;
+    max-width:390px;
+    background:#fff;
+    border-radius:22px;
+    padding:32px;
+    text-align:center;
+}
+
+.success-icon{
+    width:72px;
+    height:72px;
+    border-radius:50%;
+    background:#dcfce7;
+    color:#16a34a;
+    margin:0 auto 18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+    font-weight:bold;
+}
+
+.success-box h2{
+    margin-bottom:10px;
+}
+
+.success-box p{
+    color:#6b7280;
+    line-height:1.6;
+}
+
+.done-btn{
+    width:100%;
+    border:none;
+    background:#111827;
+    color:#fff;
+    padding:13px;
+    border-radius:10px;
+    margin-top:20px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:550px){
+
+    body{
+        padding:10px;
+    }
+
+    .history-card{
+        padding:18px;
+        border-radius:18px;
+    }
+
+    .header{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .make-payment{
+        width:100%;
+    }
+
+    .payment-item{
+        align-items:flex-start;
+    }
+
+    .payment-amount{
+        font-size:16px;
+    }
+
+    .form-card{
+        padding:22px 18px;
+        border-radius:18px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- ================= HISTORY PAGE ================= -->
+
+    <section id="historyPage" class="history-card">
+
+        <div class="header">
+
+            <div>
+                <h1>Payment History</h1>
+                <p>Recent successful payments</p>
+            </div>
+
+            <button
+                class="make-payment"
+                id="openPaymentBtn">
+                + Make Payment
+            </button>
+
+        </div>
+
+        <div id="paymentList" class="payment-list">
+            <div class="loading">
+                Loading payments...
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- ================= PAYMENT FORM ================= -->
+
+    <section id="paymentPage" class="payment-page">
+
+        <div class="form-card">
+
+            <button
+                class="back-btn"
+                id="backBtn">
+                ← Back
+            </button>
+
+            <h2>Make Payment</h2>
+
+            <p class="subtitle">
+                Enter your details to continue
+            </p>
+
+            <form id="paymentForm">
+
+                <div class="input-group">
+                    <label for="name">
+                        Full Name
+                    </label>
+
+                    <input
+                        id="name"
+                        type="text"
+                        placeholder="Enter your name"
+                        required>
+                </div>
+
+
+                <div class="input-group">
+                    <label for="contact">
+                        Contact Number
+                    </label>
+
+                    <input
+                        id="contact"
+                        type="tel"
+                        maxlength="10"
+                        pattern="[0-9]{10}"
+                        placeholder="10 digit mobile number"
+                        required>
+                </div>
+
+
+                <div class="input-group">
+                    <label for="address">
+                        Address
+                    </label>
+
+                    <textarea
+                        id="address"
+                        placeholder="Enter your address"
+                        required></textarea>
+                </div>
+
+
+                <div class="input-group">
+                    <label for="amount">
+                        Amount
+                    </label>
+
+                    <input
+                        id="amount"
+                        type="number"
+                        min="1"
+                        step="0.01"
+                        placeholder="Enter amount"
+                        required>
+                </div>
+
+
+                <button
+                    id="submitBtn"
+                    class="submit-btn"
+                    type="submit">
+                    Pay Now
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- ================= SUCCESS ================= -->
+
+<div id="successPage" class="success-page">
+
+    <div class="success-box">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h2>
+            Payment Successful!
+        </h2>
+
+        <p>
+            Thank you,
+            <strong id="successName"></strong>.
+            <br>
+            Your payment has been recorded.
+        </p>
+
+        <button
+            class="done-btn"
+            id="doneBtn">
+            Done
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- Firebase -->
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    query,
+    orderBy,
+    onSnapshot,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+
+/* ================= FIREBASE CONFIG ================= */
+
+const firebaseConfig = {
+
+    apiKey:
+    "AIzaSyBzw4AaX5r1WV5HIf5rFIabJ9qSUr31cUU",
+
+    authDomain:
+    "fundpay-614df.firebaseapp.com",
+
+    projectId:
+    "fundpay-614df",
+
+    storageBucket:
+    "fundpay-614df.firebasestorage.app",
+
+    messagingSenderId:
+    "325925910927",
+
+    appId:
+    "1:325925910927:web:2f08c7f277239f756d33fa",
+
+    measurementId:
+    "G-Y62TBLT838"
+};
+
+
+/* ================= INITIALIZE ================= */
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+/* ================= ELEMENTS ================= */
+
+const historyPage =
+    document.getElementById("historyPage");
+
+const paymentPage =
+    document.getElementById("paymentPage");
+
+const paymentForm =
+    document.getElementById("paymentForm");
+
+const paymentList =
+    document.getElementById("paymentList");
+
+const successPage =
+    document.getElementById("successPage");
+
+const successName =
+    document.getElementById("successName");
+
+const submitBtn =
+    document.getElementById("submitBtn");
+
+
+/* ================= OPEN FORM ================= */
+
+document
+.getElementById("openPaymentBtn")
+.addEventListener("click", () => {
+
+    historyPage.style.display = "none";
+
+    paymentPage.style.display = "block";
+
+});
+
+
+/* ================= BACK ================= */
+
+document
+.getElementById("backBtn")
+.addEventListener("click", () => {
+
+    paymentPage.style.display = "none";
+
+    historyPage.style.display = "block";
+
+});
+
+
+/* ================= SAVE PAYMENT ================= */
+
+paymentForm
+.addEventListener("submit", async (event) => {
+
+    event.preventDefault();
+
+
+    const name =
+        document.getElementById("name")
+        .value.trim();
+
+    const contact =
+        document.getElementById("contact")
+        .value.trim();
+
+    const address =
+        document.getElementById("address")
+        .value.trim();
+
+    const amount =
+        Number(
+            document.getElementById("amount")
+            .value
+        );
+
+
+    /* Validation */
+
+    if(!name){
+        alert("Please enter your name.");
+        return;
+    }
+
+    if(!/^[0-9]{10}$/.test(contact)){
+        alert("Please enter a valid 10 digit mobile number.");
+        return;
+    }
+
+    if(!address){
+        alert("Please enter your address.");
+        return;
+    }
+
+    if(!amount || amount <= 0){
+        alert("Please enter a valid amount.");
+        return;
+    }
+
+
+    try{
+
+        submitBtn.disabled = true;
+
+        submitBtn.textContent =
+            "Saving...";
+
+
+        /* Firestore */
+
+        await addDoc(
+            collection(db, "payments"),
+            {
+                name: name,
+                contact: contact,
+                address: address,
+                amount: amount,
+
+                status: "Successful",
+
+                createdAt:
+                    serverTimestamp()
+            }
+        );
+
+
+        /* Success */
+
+        successName.textContent = name;
+
+        paymentForm.reset();
+
+        paymentPage.style.display =
+            "none";
+
+        successPage.style.display =
+            "flex";
+
+
+    }catch(error){
+
+        console.error(error);
+
+        alert(
+            "Payment save nahi ho paya.\n\n" +
+            error.message
+        );
+
+    }finally{
+
+        submitBtn.disabled = false;
+
+        submitBtn.textContent =
+            "Pay Now";
+
+    }
+
+});
+
+
+/* ================= DONE ================= */
+
+document
+.getElementById("doneBtn")
+.addEventListener("click", () => {
+
+    successPage.style.display =
+        "none";
+
+    historyPage.style.display =
+        "block";
+
+});
+
+
+/* ================= REAL-TIME HISTORY ================= */
+
+const paymentsQuery = query(
+    collection(db, "payments"),
+    orderBy("createdAt", "desc")
+);
+
+
+onSnapshot(
+    paymentsQuery,
+
+    (snapshot) => {
+
+        paymentList.innerHTML = "";
+
+
+        if(snapshot.empty){
+
+            paymentList.innerHTML = `
+                <div class="empty">
+                    <div style="font-size:40px;">
+                        💳
+                    </div>
+
+                    <strong>
+                        No payments yet
+                    </strong>
+
+                    <p style="margin-top:6px;">
+                        Successful payments
+                        will appear here.
+                    </p>
+                </div>
+            `;
+
+            return;
+        }
+
+
+        snapshot.forEach((doc) => {
+
+            const payment =
+                doc.data();
+
+
+            const firstLetter =
+                (payment.name || "?")
+                .charAt(0)
+                .toUpperCase();
+
+
+            let dateText =
+                "Just now";
+
+
+            if(payment.createdAt){
+
+                const date =
+                    payment.createdAt.toDate();
+
+                dateText =
+                    date.toLocaleString(
+                        "en-IN",
+                        {
+                            dateStyle:
+                                "medium",
+                            timeStyle:
+                                "short"
+                        }
+                    );
+            }
+
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "payment-item";
+
+
+            const user =
+                document.createElement("div");
+
+            user.className =
+                "user";
+
+
+            const avatar =
+                document.createElement("div");
+
+            avatar.className =
+                "avatar";
+
+            avatar.textContent =
+                firstLetter;
+
+
+            const info =
+                document.createElement("div");
+
+
+            const name =
+                document.createElement("div");
+
+            name.className =
+                "user-name";
+
+            name.textContent =
+                payment.name || "Unknown";
+
+
+            const date =
+                document.createElement("div");
+
+            date.className =
+                "payment-date";
+
+            date.textContent =
+                dateText;
+
+
+            const status =
+                document.createElement("span");
+
+            status.className =
+                "status";
+
+            status.textContent =
+                "✓ Successful";
+
+
+            info.appendChild(name);
+
+            info.appendChild(date);
+
+            info.appendChild(status);
+
+
+            user.appendChild(avatar);
+
+            user.appendChild(info);
+
+
+            const amount =
+                document.createElement("div");
+
+            amount.className =
+                "payment-amount";
+
+            amount.textContent =
+                "₹" +
+                Number(payment.amount || 0)
+                .toLocaleString("en-IN");
+
+
+            item.appendChild(user);
+
+            item.appendChild(amount);
+
+
+            paymentList.appendChild(item);
+
+        });
+
+    },
+
+
+    (error) => {
+
+        console.error(error);
+
+        paymentList.innerHTML = `
+            <div class="error">
+                ❌ Payment history load nahi ho rahi.
+                <br><br>
+                <small>
+                    ${error.message}
+                </small>
+            </div>
+        `;
+
+    }
+
+);
+
+</script>
+
+</body>
+</html>

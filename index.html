@@ -1,218 +1,637 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>विकास संगठन</title>
-    <link rel="icon" href="phundiya_hindi/image/logo.png" type="phundiya_hindi/image/logo.png" />
+<html lang="hi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>विकास संगठन</title>
+    <link rel="icon" href="image/logo.png" type="image/.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Noto Sans Devanagari", sans-serif;
+        background-color: #f8f8f8;
+      }
 
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-
-    body {
-      height: 100vh;
+      /* Header */
+      /*  header {
       display: flex;
       align-items: center;
-      justify-content: center;
-      background: url('https://img.freepik.com/premium-photo/beautiful-environment-landscape-green-field_29332-1855.jpg?w=1200') no-repeat center/cover;
-      position: relative;
-      overflow: hidden;
+      background-color: white;
+      padding: 10px 20px;
+      border-bottom: 3px solid #b71c1c;
     }
 
-    /* Overlay */
-    .overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(2px);
-      z-index: 1;
+    header img {
+      height: 60px;
+      margin-right: 10px;
     }
 
-    /* Sun */
-    .sun {
-      position: absolute;
-      bottom: -20%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 22vw;
-      max-width: 180px;
-      animation: rise 6s ease-out forwards;
-      z-index: 0;
+    header div h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #000;
     }
 
-    @keyframes rise {
-      0% { bottom: -25%; opacity: 0; }
-      100% { bottom: 55%; opacity: 1; }
-    }
+    header div h2 {
+      margin: 0;
+      font-size: 18px;
+      color: #b71c1c;
+    }*/
 
-    /* Clouds */
-    .cloud {
-      position: absolute;
-      top: 10%;
-      width: 25vw;
-      max-width: 250px;
-      opacity: 0.8;
-      animation: cloudMove 60s linear infinite;
-      z-index: 0;
-    }
+      /* Navbar */
+      nav {
+        background-color: #0b1880;
+        overflow: hidden;
+      }
 
-    .cloud2 {
-      top: 28%;
-      width: 30vw;
-      max-width: 300px;
-      animation-duration: 90s;
-    }
+      nav a {
+        float: left;
+        display: block;
+        color: rgb(255, 255, 255);
+        text-align: center;
+        padding: 14px 20px;
+        text-decoration: none;
+        font-weight: bold;
+      }
 
-    @keyframes cloudMove {
-      0% { transform: translateX(-300px); }
-      100% { transform: translateX(120vw); }
-    }
+      nav a:hover {
+        background-color: #000000;
+      }
 
-    /* Birds */
-    .birds {
-      position: absolute;
-      top: 8%; left: 0;
-      width: 15vw;
-      max-width: 130px;
-      animation: fly 18s linear infinite;
-      z-index: 2;
-      opacity: 0.8;
-    }
+      /* Dropdown container */
+      .dropdown {
+        float: left;
+        overflow: hidden;
+      }
 
-    .birds2 {
-      top: 22%;
-      width: 17vw;
-      max-width: 150px;
-      animation-duration: 24s;
-      animation-delay: 3s;
-    }
+      .dropdown .dropbtn {
+        font-weight: bold;
+        border: none;
+        outline: none;
+        color: rgb(255, 255, 255);
+        padding: 14px 20px;
+        background-color: inherit;
+        font-family: inherit;
+        margin: 0;
+        cursor: pointer;
+      }
 
-    @keyframes fly {
-      0% { transform: translateX(-200px) scale(1); }
-      50% { transform: translateX(50vw) scale(1.1); }
-      100% { transform: translateX(120vw) scale(1); }
-    }
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #ffffff;
+        min-width: 200px;
+        z-index: 1;
+      }
 
-    /* Grass */
-    .grass {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 18vh;
-     /* background: url('https://pngimg.com/d/grass_PNG10897.png') repeat-x;*/
-      background-size: cover;
-      animation: grassWave 4s ease-in-out infinite;
-      z-index: 3;
-    }
+      .dropdown-content a {
+        float: none;
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        text-align: left;
+        font-weight: normal;
+      }
 
-    @keyframes grassWave {
-      0% { transform: skewX(0deg); }
-      50% { transform: skewX(3deg); }
-      100% { transform: skewX(0deg); }
-    }
+      .dropdown-content a:hover {
+        background-color: #fcfdff;
+        
+      }
 
-    /* Main Box */
-    .container {
-      text-align: center;
-      color: rgb(18, 255, 5);
-      z-index: 4;
-      padding: 40px 50px;
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-      animation: fadeIn 1.5s ease-in-out;
-      width: 90%;
-      max-width: 450px;
-    }
+      .dropdown:hover .dropdown-content {
+        display: block;
+      }
 
-    .logo {
-      width: 110px;
-      filter: drop-shadow(0px 4px 10px black);
-      margin-bottom: 15px;
-    }
+      /* Hamburger icon */
+      .icon {
+        display: none;
+        float: right;
+        padding: 14px 20px;
+        color: white;
+        font-size: 22px;
+        cursor: pointer;
+      }
 
-    h1 {
-      font-size: 2.3rem;
-      font-weight: 700;
-      text-shadow: 3px 3px 10px black;
-      margin-bottom: 20px;
-    }
+      /* Responsive Design */
+      @media screen and (max-width: 768px) {
+        nav a,
+        .dropdown {
+          display: none;
+        }
+        nav .icon {
+          display: block;
+        }
 
-    .btn {
-      padding: 15px 45px;
-      margin: 10px;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      font-weight: bold;
-      background: rgba(54, 249, 83, 0.92);
-      color: #222;
-      transition: 0.3s;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      width: 100%;
-      max-width: 300px;
-    }
+        nav.responsive {
+          position: relative;
+        }
+        nav.responsive a,
+        nav.responsive .dropdown {
+          float: none;
+          display: block;
+          text-align: left;
+        }
+        nav.responsive .dropdown-content {
+          position: relative;
+        }
+      }
 
-    .btn:hover {
-      background: #0ec536;
-      transform: translateY(-5px) scale(1.07);
-      box-shadow: 0px 8px 20px rgba(0,0,0,0.6);
-    }
+      /*  * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
 
-    /* FadeIn */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+      body {
+        background: #f9f9f9;
+        color: #333;
+        transition: background 0.4s, color 0.4s;
+      }*/
 
-    /* Mobile Fix */
-    @media (max-width: 600px) {
-      h1 { font-size: 1.8rem; }
-      .logo { width: 80px; }
-      .sun { width: 35vw; }
-    }
-    #li{
-      color: #0202c5; 
-      text-decoration: none;
-       border: 1.5px solid rgb(77, 255, 0);
-       padding: 5px 5px ;
-    }
-#A{
-  color: rgb(255, 255, 255);
- 
+      /* Header */
+      header {
+        background: url("village.jpg") no-repeat center center/cover;
+        color: white;
+        text-align: center;
+        padding: 60px 20px;
+        position: relative;
+        overflow: hidden;
+      }
+      header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 0;
+      }
+      header::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("image/village.jpg") no-repeat center center/cover;
+        animation: zoomBg 20s infinite alternate ease-in-out;
+        z-index: -1;
+      }
+      header img,
+      header h1,
+      header p {
+        position: relative;
+        z-index: 1;
+      }
+      @keyframes zoomBg {
+        from {
+          transform: scale(1);
+        }
+        to {
+          transform: scale(1.2);
+        }
+      }
+      header img {
+        width: 150px;
+        border-radius: 50%;
+        border: 4px solid white;
+        margin-bottom: 15px;
+      }
+      header h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+      header p {
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      /* Navbar */
+      /*  nav {
+        background: #004080;
+        transition: background 0.4s;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      .nav-container {
+        max-width: 1100px;
+        margin: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+      }
+      .logo-text {
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .nav-links {
+        display: flex;
+        gap: 20px;
+        transition: all 0.4s ease;
+      }
+      .nav-links a {
+        position: relative;
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        transition: color 0.3s;
+      }
+      .nav-links a:hover {
+        color: #ffd700;
+      }*/
+      /* Underline Animation */
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -5px;
+        width: 0%;
+        height: 2px;
+        background: #bcb60a;
+        transition: width 0.3s ease;
+      }
+      .nav-links a:hover::after,
+      .nav-links a.active::after {
+        width: 100%;
+      }
+
+      /* Hamburger */
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
+        gap: 5px;
+        margin-left: 15px;
+      }
+      .hamburger div {
+        width: 25px;
+        height: 3px;
+        background: white;
+        transition: all 0.3s ease;
+      }
+      .hamburger.active div:nth-child(1) {
+        transform: rotate(45deg) translateY(8px);
+      }
+      .hamburger.active div:nth-child(2) {
+        opacity: 0;
+      }
+      .hamburger.active div:nth-child(3) {
+        transform: rotate(-45deg) translateY(-8px);
+      }
+
+      /* Theme Toggle Button */
+      .theme-toggle {
+        background: #f9f9f9;
+        border: none;
+        padding: 6px 12px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-weight: bold;
+        margin-left: 15px;
+        transition: background 0.3s;
+      }
+      .theme-toggle:hover {
+        background: #111a95;
+        color: white;
+      }
+
+      /* Section */
+      section {
+        padding: 50px 20px;
+        text-align: center;
+        max-width: 1000px;
+        margin: auto;
+      }
+      section h2 {
+        font-size: 26px;
+        color: #0056b3;
+        margin-bottom: 15px;
+      }
+      section p {
+        font-size: 18px;
+        line-height: 1.6;
+      }
+
+      /* Gallery */
+      .gallery-wrapper {
+        overflow: hidden;
+        position: relative;
+        width: 100%;
+        background: #fff;
+        padding: 20px 0;
+        transition: background 0.4s;
+      }
+      .gallery-track {
+        display: flex;
+        width: max-content;
+        animation: scrollLeft 20s linear infinite;
+      }
+      .gallery-track img {
+        width: 350px;
+        height: 280px;
+        margin: 0 10px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.4s ease;
+      }
+      .gallery-track img:hover {
+        transform: scale(1.1);
+      }
+      .gallery-wrapper:hover .gallery-track {
+        animation-play-state: paused;
+      }
+      @keyframes scrollLeft {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      /* Footer */
+      footer {
+        background: #222;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        margin-top: 30px;
+        font-size: 14px;
+        transition: background 0.4s, color 0.4s;
+      }
+      .social-icons {
+        margin: 10px 0;
+      }
+      .social-icons a {
+        color: white;
+        margin: 0 10px;
+        font-size: 20px;
+        transition: color 0.3s;
+      }
+      .social-icons a:hover {
+        color: #ffd700;
+      }
+
+      /* Dark Mode */
+      body.dark {
+        background: #121212;
+        color: #f1f1f1;
+      }
+      body.dark nav {
+        background: #1a1a1a;
+      }
+      body.dark .logo-text {
+        color: #ffd700;
+      }
+      body.dark .nav-links a {
+        color: #f1f1f1;
+      }
+      body.dark .gallery-wrapper {
+        background: #1e1e1e;
+      }
+      body.dark section h2 {
+        color: #ffd700;
+      }
+      body.dark footer {
+        background: #000;
+        color: #bbb;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
+          flex-direction: column;
+          background: #003366;
+          position: absolute;
+          top: 60px;
+          right: 0;
+          width: 220px;
+          padding: 15px;
+          border-radius: 0 0 10px 10px;
+        }
+        .nav-links.active {
+          display: flex;
+        }
+        .hamburger {
+          display: flex;
+        }
+        header h1 {
+          font-size: 22px;
+        }
+        header p {
+          font-size: 16px;
+        }
+        section h2 {
+          font-size: 22px;
+        }
+        section p {
+          font-size: 16px;
+        }
+        .gallery-track img {
+          width: 180px;
+          height: 120px;
+        }
+      }
+
+
+      /*scrolling line */
+      .scroll-line {
+  /*background: #b7b8c7;
+  color: white;*/
+  padding: 1px 13px;
+  overflow: hidden;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
-  </style>
-</head>
 
-<body>
+.scroll-line p {
+  display: inline-block;
+  padding-left: 100%;
+  animation: scrollText 75s linear infinite;
+  font-size: 18px;
+  font-weight: bold;
+}
 
-<div class="overlay"></div>
+@keyframes scrollText {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
 
-<!-- Sun -->
-<!-- <img src="https://pngimg.com/uploads/sun/sun_PNG13449.png" class="sun" /> -->
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <img src="image/logo.png" loading="lazy" alt="विकास संगठन लोगो" />
+      <h1>विकास संगठन फुंदिया</h1>
+      <p>"पढ़ेंगे पढ़ाएंगे, उन्नत गाँव बनाएंगे"</p>
+    </header>
 
-<!-- Clouds -->
-<img src="https://pngimg.com/uploads/cloud/cloud_PNG16.png" class="cloud" />
-<img src="https://pngimg.com/uploads/cloud/cloud_PNG16.png" class="cloud cloud2" />
-
-<!-- Birds -->
-<img src="https://pngimg.com/uploads/birds/birds_PNG30.png" class="birds" />
-<img src="https://pngimg.com/uploads/birds/birds_PNG30.png" class="birds birds2" />
-
-<!-- Grass -->
-<div class="grass"></div>
-
-<!-- Main Language Box -->
-<div class="container">
-  <img src="phundiya_english/image/logo.png" class="logo" alt="Village Logo">
-  <h1>Village Phundiya Website</h1>
-  <a href="https://govindx.netlify.app" id="li">Govind Website</a><br>
-  <button class="btn" onclick="location.href='phundiya_hindi/index.html'"><span id="A">🕉</span> Hindi</button>
-  <button class="btn" onclick="location.href='phundiya_english/index.html'">🌍 English</button>
+    <!-- Navbar -->
+    <nav id="navbar">
+      <a href="#">होम</a>
+      <div class="dropdown">
+        <button class="dropbtn">गाँव के बारे में ▾</button>
+        <div class="dropdown-content">
+          <a href="detail.html">इतिहास</a>
+          <a href="links_for_sarkary.html">सरकारी दस्तावेज़ — त्वरित लिंक</a>
+        </div>
+      </div>
+     <div class="dropdown">
+        <button class="dropbtn">स्कूल ▾</button>
+        <div class="dropdown-content">
+          <a href="Teachers.html">अध्यापक</a>
+          <a href="schoolbatch.html">छात्र</a>
+        </div>
+      </div>
+      <a href="gavimage.html">नागरिक</a>
+      <!-- <a href="#">सूचना का अधिकार</a> -->
+      <a href="image.html">फोटो गैलरी</a>
+      <a href="news.html">News village</a>
+      <a href="feedback_form.html">वेबसाइट सुझाव फ़ॉर्म</a>
+      <!-- <a href="#">फार्म</a> -->
+      <!-- <h3 style="margin-left: 200px;">vikash sangathan phundiya</h3> -->
+      <span class="icon" onclick="toggleMenu()">☰</span>
+      <span class="icon" onclick="toggleMenu()">विकास संगठन फुंदिया</span>
+    </nav>
+<div class="scroll-line">
+  <p>📢 महत्वपूर्ण सूचना : भारत माता की जय 
+पढ़ेंगे पढ़ाएंगे उन्नत गांव बनाएंगे
+स्कूल और अध्यापक शिक्षक 
+हो तो हमारे गांव के जैसे 
+आज गणतंत्र दिवस के अवसर पर स्कूल में अनेक तरह की झांकियां तथा प्रस्तुति दी गई 
+जिसका सभी गांववासी के नागरिक तथा स्कूल के विद्यार्थियों ने आनंद लिया 
+कार्यक्रम समापन पर 
+आभार प्रकट स्कूल प्रभारी आदरणीय शर्मा जी सर द्वारा किया गया तथा मंच संचालन कुशवाहा जी सर तथा साहू जी सर द्वारा किया गया 
+कुशवाहा जी सर द्वारा बताया गया कि हमारे विद्यालय में एक अतिरिक्त कक्ष की आवश्यकता है जिसमें विद्यार्थी बैठकर पढ़ सके अतिरिक्त कक्ष के निर्माण के लिए 
+( 1) प्रधान अध्यापक श्री शर्मा जी सर द्वारा 
+101000 देने की घोषणा की गई 
+(2) अध्यापक श्री कुशवाहा जी सर द्वारा 51000 देने की घोषणा की गई 
+(3) अध्यापक श्री साहू जी सर द्वारा ₹21000 देने की घोषणा की गई 
+गांव तथा पंचायत के सभी वरिष्ठ नागरिक आप सभी से भी निवेदन है कि इस पुण्य और शिक्षा के काम में आगे बढ़कर आए और अपना योगदान दे ताकि अपने बच्चे बच्ची का भविष्य उज्जवल हो और वह अच्छी शिक्षा ग्रहण कर सके 
+निवेदक 
+युवा विकास विद्यालय संगठन | </p>
 </div>
 
-</body>
+    
+    <!-- Mission Section -->
+    <section id="about">
+      <h2>हमारा मिशन</h2>
+      <p>
+        छोटे प्रयास बड़ा बदलाव करते हैं। आओ शुरुआत गाँव के स्कूल से करते हैं।
+        मिलकर हम शिक्षा के माध्यम से एक बेहतर भविष्य बना सकते हैं।
+      </p>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery">
+      <div class="gallery-wrapper">
+        <div class="gallery-track">
+          <img src="image/school1.jpg" loading="lazy" alt="स्कूल 1" />
+          <img src="image/school2.jpg" loading="lazy" alt="स्कूल 2" />
+          <img src="image/school3.jpg" loading="lazy" alt="इवेंट 1" />
+          <img src="image/school4.jpg" loading="lazy" alt="इवेंट 2" />
+          <img src="image/school5.jpg" loading="lazy" alt="स्कूल 1" />
+          <img src="image/school6.jpg" loading="lazy" alt="स्कूल 2" />
+          <img src="image/school7.jpg" loading="lazy" alt="इवेंट 1" />
+          <img src="image/26_3.jpeg" loading="lazy" alt="इवेंट 1" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p><u> © 2025 विकास संगठन | सर्वाधिकार सुरक्षित </u></p>
+      <br />
+      <p><u>Made By Govind</u></p>
+      <br />
+      <div class="social-icons">
+        <a
+          href="https://www.linkedin.com/in/govind-nagar-307a66336"
+          target="_blank"
+          ><i class="fab fa-linkedin"></i
+        ></a>
+        <a
+          href="https://www.instagram.com/itz.govind___?igsh=MTF5aHN4eDg0M2ZyMQ=="
+          target="_blank"
+          ><i class="fab fa-instagram"></i
+        ></a>
+        <a href="https://www.youtube.com/@ultimate-XYZ-king1" target="_blank"
+          ><i class="fab fa-youtube"></i
+        ></a>
+      </div>
+      <a href="http://www.freevisitorcounters.com">_</a>
+      <script
+        type="text/javascript"
+        src="https://www.freevisitorcounters.com/auth.php?id=413e68ea5547b324daab785e0787d66033ac4a9a"
+      ></script>
+      <script
+        type="text/javascript"
+        src="https://www.freevisitorcounters.com/en/home/counter/1397467/t/5"
+      ></script>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+      function toggleMenu() {
+        document.getElementById("navLinks").classList.toggle("active");
+        document.getElementById("hamburger").classList.toggle("active");
+      }
+      function toggleTheme() {
+        document.body.classList.toggle("dark");
+      }
+
+      function toggleMenu() {
+        document.getElementById("navLinks").classList.toggle("active");
+        document.getElementById("hamburger").classList.toggle("active");
+      }
+
+      function toggleTheme() {
+        document.body.classList.toggle("dark");
+      }
+
+      // 🔥 Background auto-change with fade effect
+      const header = document.querySelector("header");
+      const images = [
+        "image/3.jpg",
+        "image/18.jpg",
+        "image/27.jpg",
+        "image/school3.jpg",
+        "image/26_3.jpeg",
+      ];
+
+      let current = 0;
+      header.style.transition =
+        "background-image 1.5s ease-in-out, opacity 1.5s ease-in-out";
+
+      setInterval(() => {
+        header.style.opacity = 0; // fade out
+        setTimeout(() => {
+          current = (current + 1) % images.length;
+          header.style.backgroundImage = `url(${images[current]})`;
+          header.style.opacity = 1; // fade in
+        }, 0);
+      }, 4000);
+
+      function toggleMenu() {
+        var x = document.getElementById("navbar");
+        if (x.className === "") {
+          x.className = "responsive";
+        } else {
+          x.className = "";
+        }
+      }
+    </script>
+  </body>
 </html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>विकास संगठन</title>
+  <link rel="icon" href="image/logo.png" type="image/.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    /* ---------------- BACKGROUND ---------------- */
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #043b5b, #7ca0d5);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 25px;
+    }
+
+    /* ---------------- FORM WRAPPER ---------------- */
+    .contact-form {
+      width: 100%;
+      max-width: 450px;
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.15);
+      padding: 35px;
+      border-radius: 18px;
+      box-shadow: 0px 8px 40px rgba(0,0,0,0.3);
+      animation: fadeIn 0.9s ease;
+      color: #fff;
+    }
+
+    .form-title {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 25px;
+      letter-spacing: 1px;
+    }
+
+    /* ---------------- INPUTS ---------------- */
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .input-group label {
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .input-group input,
+    .input-group textarea {
+      width: 100%;
+      margin-top: 6px;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: rgba(255, 255, 255, 0.35);
+      font-size: 16px;
+      outline: none;
+      color: #fff;
+      transition: 0.3s;
+    }
+
+    .input-group input::placeholder,
+    .input-group textarea::placeholder {
+      color: #eef;
+    }
+
+    .input-group input:focus,
+    .input-group textarea:focus {
+      background: rgba(255, 255, 255, 0.55);
+      transform: scale(1.03);
+    }
+
+    textarea {
+      height: 110px;
+      resize: none;
+    }
+
+    /* ---------------- BUTTON ---------------- */
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      background: #1f027e;
+      color: #e8ebee;
+      font-size: 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .btn-submit:hover {
+      background: #0b0146;
+      transform: scale(1.05);
+    }
+
+    /* ---------------- CONFIRMATION ---------------- */
+    .confirmation {
+      margin-top: 15px;
+      padding: 12px;
+      background: rgba(0, 255, 0, 0.8);
+      color: white;
+      text-align: center;
+      border-radius: 10px;
+      display: none;
+      animation: pop 0.5s ease;
+    }
+
+    .confirmation.show {
+      display: block;
+    }
+
+    /* ---------------- ANIMATIONS ---------------- */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pop {
+      0% { opacity: 0; transform: scale(0.7); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="contact-form">
+    <form name="google-sheet"
+          method="post"
+          action="https://script.google.com/macros/s/AKfycbw30YrJ669oUS2hdmqanxX_caXJpBJ9xqscXcaJvZBvclr41BMnq-J73_bHVZz6jGAFMA/exec">
+
+      <h2 class="form-title">वेबसाइट सुझाव फ़ॉर्म</h2>
+
+      <div class="input-group">
+        <label>नाम</label>
+        <input type="text" name="Name" placeholder="अपना नाम लिखें" required />
+      </div>
+
+      <div class="input-group">
+        <label>ईमेल</label>
+        <input type="email" name="Email" placeholder="आपका ईमेल" required />
+      </div>
+
+      <div class="input-group">
+        <label>मोबाइल नंबर</label>
+        <input type="text" name="Mobile" placeholder="10 अंकों का मोबाइल नंबर" pattern="[0-9]{10}" required />
+      </div>
+
+      <div class="input-group">
+        <label>आपका सुझाव</label>
+        <textarea name="Comment" placeholder="यहाँ अपना सुझाव लिखें..." required></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit">संदेश भेजें</button>
+
+      <div class="confirmation" id="confirmationMessage">
+        ✔ आपका संदेश सफलतापूर्वक भेज दिया गया!
+      </div>
+
+    </form>
+  </div>
+
+  <script>
+    const form = document.forms["google-sheet"];
+    const confirmation = document.getElementById("confirmationMessage");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+      })
+      .then(() => {
+        confirmation.classList.add("show");
+        form.reset();
+        setTimeout(() => confirmation.classList.remove("show"), 4000);
+      })
+      .catch(() => alert("त्रुटि! कृपया दोबारा कोशिश करें।"));
+    });
+  </script>
+
+</body>
+</html>

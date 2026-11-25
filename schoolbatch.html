@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>School Batches — Village Phundiya</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
+
+    <style>
+      :root{
+        --brand: #004aad;
+        --accent: #f5b800;
+        --bg1: #eaf4ff;
+        --bg2: #f7fbff;
+        --card-bg: #ffffff;
+        --muted:#6b7280;
+        --radius:12px;
+      }
+
+      *{box-sizing:border-box;margin:0;padding:0}
+      html,body{height:100%}
+      body{
+        font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial;
+        background: linear-gradient(135deg,var(--bg1),var(--bg2));
+        color:#0f172a;
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
+        padding-bottom:120px; /* space for footer */
+      }
+
+      header{
+        background:var(--brand);
+        color: #fff;
+        padding:22px 16px;
+        text-align:center;
+        box-shadow:0 4px 14px rgba(2,6,23,0.12);
+        position:sticky;
+        top:0;
+        z-index:20;
+      }
+      header h1{font-size:20px;font-weight:600}
+      header p{opacity:.92;font-size:13px;margin-top:6px}
+
+      .container{
+        max-width:1100px;
+        margin:22px auto;
+        padding:0 16px;
+      }
+
+      /* search + controls */
+      .controls{
+        display:flex;
+        gap:12px;
+        justify-content:space-between;
+        align-items:center;
+        flex-wrap:wrap;
+        margin-bottom:18px;
+      }
+      .search-wrap{
+        flex:1 1 320px;
+        display:flex;
+        align-items:center;
+        gap:8px;
+      }
+      .search-wrap input{
+        width:100%;
+        padding:10px 14px;
+        border-radius:999px;
+        border:1.8px solid rgba(0,74,173,0.15);
+        outline:none;
+        font-size:14px;
+        background:rgba(255,255,255,0.95);
+      }
+      .search-wrap input:focus{box-shadow:0 0 6px rgba(245,184,0,0.18);border-color:var(--accent)}
+
+      .select-batch{
+        min-width:160px;
+        padding:8px 12px;
+        border-radius:10px;
+        border:1px solid rgba(0,0,0,0.06);
+        background:white;
+        font-size:14px;
+      }
+
+      /* batches */
+      .batches {
+        display:grid;
+        grid-template-columns:1fr;
+        gap:18px;
+      }
+
+      @media (min-width:860px){
+        .batches{grid-template-columns: 1fr 1fr}
+      }
+
+      .batch{
+        background:var(--card-bg);
+        border-radius:var(--radius);
+        padding:16px;
+        box-shadow:0 6px 18px rgba(12,20,40,0.06);
+        border:1px solid rgba(2,6,23,0.03);
+      }
+      .batch-header{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:12px;
+        margin-bottom:12px;
+      }
+      .batch h2{color:var(--brand); font-size:16px; font-weight:600;}
+      .toggle-btn{
+        background:transparent;border:1px solid rgba(0,0,0,0.06);padding:6px 10px;border-radius:10px;cursor:pointer;font-size:13px;
+      }
+
+      .students{
+        display:grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap:12px;
+      }
+
+      .student{
+        background:linear-gradient(180deg,#fff,#fbfdff);
+        border-radius:10px;
+        padding:10px;
+        text-align:center;
+        cursor:pointer;
+        border:1px solid rgba(0,74,173,0.06);
+        transition: transform .18s ease, box-shadow .18s ease;
+        display:flex;
+        gap:8px;
+        align-items:center;
+      }
+      .student:hover{transform:translateY(-6px); box-shadow:0 10px 20px rgba(2,6,23,0.06)}
+      .student img{
+        width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--brand);
+        flex-shrink:0;
+      }
+      .student .meta{ text-align:left; font-size:13px; line-height:1.05;}
+      .student .meta strong{display:block;font-weight:600;color:var(--brand);font-size:13px}
+      .student .meta span{display:block;color:var(--muted);font-weight:500}
+
+      .no-result{display:none;text-align:center;color:var(--muted);font-style:italic;margin:18px 0}
+
+      /* modal */
+      .modal{
+        display:none;
+        position:fixed;
+        inset:0;
+        z-index:60;
+        background:rgba(2,6,23,0.5);
+        align-items:center;
+        justify-content:center;
+        padding:18px;
+      }
+      .modal.open{display:flex}
+      .modal-card{
+        width:100%;
+        max-width:420px;
+        background:white;
+        border-radius:14px;
+        padding:18px;
+        box-shadow:0 12px 34px rgba(2,6,23,0.18);
+        overflow:auto;
+        max-height:92vh;
+      }
+      .modal-top{display:flex;gap:12px;align-items:center}
+      .modal-top img{width:84px;height:84px;border-radius:12px;object-fit:cover;border:3px solid var(--brand)}
+      .modal-top .m-meta strong{font-size:18px;color:var(--brand);display:block}
+      .modal-top .m-meta p{margin-top:6px;color:var(--muted);font-size:13px}
+
+      .modal-details{margin-top:12px;font-size:14px;color:#111;line-height:1.5}
+      .modal-details p{margin:8px 0}
+      .btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+      .btn{
+        border:none;padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;
+      }
+      .btn.close{background:var(--brand);color:white}
+      .btn.call{background:var(--accent);color:#000}
+
+      /* footer */
+      footer{
+      /*  position:fixed;*/
+        left:0;right:0;bottom:0;
+        background:var(--brand);
+        color:#fff;
+        padding:12px 10px;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        box-shadow:0 -6px 20px rgba(2,6,23,0.12);
+      }
+      .social-icons{display:flex;gap:12px;align-items:center;margin-left:12px}
+      .social-icons a{color:#fff;font-size:18px}
+      .copyright{font-size:13px;opacity:.95}
+
+      /* small tweaks */
+      .muted{color:var(--muted);font-size:13px}
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>🏫 Village Phundiya</h1>
+      <p>Empowering Minds • Building Futures</p>
+    </header>
+
+    <main class="container" id="main">
+      <div class="controls" aria-hidden="false">
+        <div class="search-wrap" role="search" aria-label="Search students">
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="🔍 Search by name, class or hobby..."
+            aria-label="Search students by name, class or hobbies"
+          />
+        </div>
+
+        <select id="batchSelect" class="select-batch" aria-label="Filter by batch">
+          <option value="all">All batches</option>
+          <option value="2014-20">Batch 2014–20</option>
+          <option value="2015-21">Batch 2015–21</option>
+          <option value="2016-22">Batch 2016–22</option>
+        </select>
+      </div>
+
+      <div id="noResult" class="no-result">No student found 😕</div>
+
+      <section class="batches" id="batches">
+        <!-- Batch: 2014-20 -->
+        <article class="batch" data-batch="2014-20" aria-labelledby="b1">
+          <div class="batch-header">
+            <h2 id="b1">Batch 2014–20</h2>
+            <button class="toggle-btn" data-target="2014-20">Collapse</button>
+          </div>
+
+          <div class="students" role="list">
+            <div
+              class="student"
+              role="listitem"
+              tabindex="0"
+              data-name="Govind Nagar"
+              data-class="8th"
+              data-marks="95%"
+              data-hobbies="Football, music, cricket"
+              data-contact="8839962150"
+              data-img="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"
+              aria-label="Govind Nagar, class 8th"
+            >
+              <img loading="lazy" alt="Govind Nagar photo" src="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"/>
+              <div class="meta">
+                <strong>Govind Nagar</strong>
+                <span>8th • 99%</span>
+              </div>
+            </div>
+
+            <div class="student" tabindex="0"
+                 data-name="Tanish Yadav"
+                 data-class="8th"
+                 data-marks="95%   (mavasha)"
+                 data-hobbies="Poetry, cooking, sports"
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=5"
+                 aria-label="Tanish Yadav, class 8th">
+              <img loading="lazy" alt="Tanish Yadav photo" src="https://i.pravatar.cc/100?img=5"/>
+              <div class="meta">
+                <strong>Tanish Yadav</strong>
+                <span>8th • 95%</span>
+              </div>
+            </div>
+
+            <div class="student" tabindex="0"
+                 data-name="Radha Yadav"
+                 data-class="8th"
+                 data-marks="80%  (mavasha)"
+                 data-hobbies=""
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=5"
+                 aria-label="Radha Yadav, class 8th">
+              <img loading="lazy" alt="Radha Yadav photo" src="https://i.pravatar.cc/100?img=5"/>
+              <div class="meta">
+                <strong>Radha Yadav</strong>
+                <span>8th • 80%</span>
+              </div>
+            </div>
+
+            <div class="student" tabindex="0"
+                 data-name="Shyam Siloriya"
+                 data-class="8th"
+                 data-marks="93%"
+                 data-hobbies="Singing, Art"
+                 data-contact="7000515467"
+                 data-img="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"
+                 aria-label="Shyam Siloriya, class 8th">
+              <img loading="lazy" alt="Shyam Siloriya photo" src="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"/>
+              <div class="meta">
+                <strong>Shyam Siloriya</strong>
+                <span>8th • 99%</span>
+              </div>
+            </div>
+
+            <div class="student" tabindex="0"
+                 data-name="Shivani Yadav"
+                 data-class="8th"
+                 data-marks="92%   (mavasha)"
+                 data-hobbies=""
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=5"
+                 aria-label="Shivani Yadav, class 8th">
+              <img loading="lazy" alt="Shivani Yadav photo" src="https://i.pravatar.cc/100?img=5"/>
+              <div class="meta">
+                <strong>Shivani Yadav</strong>
+                <span>8th • 92%</span>
+              </div>
+            </div>
+
+            <div class="student" tabindex="0"
+                 data-name="Lalit Yadav"
+                 data-class="8th"
+                 data-marks="90%   (mavasha)"
+                 data-hobbies=""
+                 data-contact="lalit123@gmail.com"
+                 data-img="https://i.pravatar.cc/100?img=8"
+                 aria-label="Lalit Yadav, class 8th">
+              <img loading="lazy" alt="Lalit Yadav photo" src="https://i.pravatar.cc/100?img=8"/>
+              <div class="meta">
+                <strong>Lalit Yadav</strong>
+                <span>8th • 90%</span>
+              </div>
+            </div>
+
+            <div class="student" tabindex="0"
+                 data-name="Anjana"
+                 data-class="8th"
+                 data-marks="63%"
+                 data-hobbies=""
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=9"
+                 aria-label="Anjana, class 8th">
+              <img loading="lazy" alt="Anjana photo" src="https://i.pravatar.cc/100?img=9"/>
+              <div class="meta">
+                <strong>Anjana</strong>
+                <span>8th • 63%</span>
+              </div>
+            </div>
+
+            <div class="student" tabindex="0"
+                 data-name="Manisha"
+                 data-class="8th"
+                 data-marks="62%"
+                 data-hobbies=""
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=10"
+                 aria-label="Manisha, class 8th">
+              <img loading="lazy" alt="Manisha photo" src="https://i.pravatar.cc/100?img=10"/>
+              <div class="meta">
+                <strong>Manisha</strong>
+                <span>8th • 62%</span>
+              </div>
+            </div>
+
+            <div class="student" tabindex="0"
+                 data-name="Rukma"
+                 data-class="8th"
+                 data-marks="95%"
+                 data-hobbies=""
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=5"
+                 aria-label="Rukma, class 8th">
+              <img loading="lazy" alt="Rukma photo" src="https://i.pravatar.cc/100?img=5"/>
+              <div class="meta">
+                <strong>Rukma</strong>
+                <span>8th • 95%</span>
+              </div>
+            </div>
+
+            <div class="student" tabindex="0"
+                 data-name="Yogesh Nagar"
+                 data-class="8th"
+                 data-marks="85%"
+                 data-hobbies="Art"
+                 data-contact="yogesh123@gmail.com"
+                 data-img="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"
+                 aria-label="Yogesh Nagar, class 8th">
+              <img loading="lazy" alt="Yogesh Nagar photo" src="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"/>
+              <div class="meta">
+                <strong>Yogesh Nagar</strong>
+                <span>8th • 85%</span>
+              </div>
+            </div>
+
+            <div class="student" tabindex="0"
+                 data-name="Kashish"
+                 data-class="8th"
+                 data-marks="95%"
+                 data-hobbies=""
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=5"
+                 aria-label="Kashish, class 8th">
+              <img loading="lazy" alt="Kashish photo" src="https://i.pravatar.cc/100?img=5"/>
+              <div class="meta">
+                <strong>Kashish</strong>
+                <span>8th • 95%</span>
+              </div>
+            </div>
+
+            <div class="student" tabindex="0"
+                 data-name="Ankit"
+                 data-class="8th"
+                 data-marks="65%"
+                 data-hobbies=""
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=13"
+                 aria-label="Ankit, class 8th">
+              <img loading="lazy" alt="Ankit photo" src="https://i.pravatar.cc/100?img=13"/>
+              <div class="meta">
+                <strong>Ankit</strong>
+                <span>8th • 65%</span>
+              </div>
+            </div>
+
+          </div>
+        </article>
+
+        <!-- Batch: 2015-25 -->
+        <article class="batch" data-batch="2015-21" aria-labelledby="b2">
+          <div class="batch-header">
+            <h2 id="b2">Batch 2015–21</h2>
+            <button class="toggle-btn" data-target="2015-21">Collapse</button>
+          </div>
+
+          <div class="students" role="list">
+            <div class="student" tabindex="0"
+                 data-name="Renuka"
+                 data-class="8th"
+                 data-marks="95%  (mavasha)"
+                 data-hobbies="Football"
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=5"
+                 aria-label="Renuka, class 8th">
+              <img loading="lazy" alt="Renuka photo" src="https://i.pravatar.cc/100?img=5"/>
+              <div class="meta">
+                <strong>Renuka</strong>
+                <span>8th • 95%</span>
+              </div>
+            </div>
+
+             <div class="student" tabindex="0"
+                 data-name="Kiran"
+                 data-class="8th"
+                 data-marks="95%  (mavasha)"
+                 data-hobbies=""
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=5"
+                 aria-label="Kiran, class 8th">
+              <img loading="lazy" alt="Kiran photo" src="https://i.pravatar.cc/100?img=5"/>
+              <div class="meta">
+                <strong>Kiran</strong>
+                <span>8th • 94%</span>
+              </div>
+            </div>
+
+             <div class="student" tabindex="0"
+                 data-name="Parmanand"
+                 data-class="8th"
+                 data-marks="95%   (mavasha)"
+                 data-hobbies=""
+                 data-contact=""
+                
+                 data-img="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"
+                 aria-label="Parmanand, class 8th">
+              <img loading="lazy" alt="Parmanand photo" src="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"/>
+              <div class="meta">
+                <strong>Parmanand</strong>
+                <span>8th • 91%</span>
+              </div>
+            </div>
+
+
+
+            <div class="student" tabindex="0"
+                 data-name="Tannu"
+                 data-class="8th"
+                 data-marks="93%"
+                 data-hobbies="Art"
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=5"
+                 aria-label="Tannu, class 8th">
+              <img loading="lazy" alt="Tannu photo" src="https://i.pravatar.cc/100?img=5"/>
+              <div class="meta">
+                <strong>Tannu</strong>
+                <span>8th • 93%</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+
+        <!-- Batch: 2016-25 -->
+        <article class="batch" data-batch="2016-22" aria-labelledby="b3">
+          <div class="batch-header">
+            <h2 id="b2">Batch 2016–22</h2>
+            <button class="toggle-btn" data-target="2016-22">Collapse</button>
+          </div>
+
+          <div class="students" role="list">
+            <div class="student" tabindex="0"
+                 data-name="sachin nagar"
+                 data-class="8th"
+                 data-marks="95%"
+                 data-hobbies=""
+                 data-contact=""
+                 data-img="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"
+                 aria-label="sachin, class 8th">
+              <img loading="lazy" alt="sachin nagar" src="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"/>
+              <div class="meta">
+                <strong>sachin nagar</strong>
+                <span>8th • 95%</span>
+              </div>
+            </div>
+
+             <div class="student" tabindex="0"
+                 data-name="Kirti nagar"
+                 data-class="8th"
+                 data-marks="95%"
+                 data-hobbies=""
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=5"
+                 aria-label="Kirti, class 8th">
+              <img loading="lazy" alt="Kirti photo" src="https://i.pravatar.cc/100?img=5"/>
+              <div class="meta">
+                <strong>Kirti nagar</strong>
+                <span>8th • 94%</span>
+              </div>
+            </div>
+
+             <div class="student" tabindex="0"
+                 data-name="kana beragi"
+                 data-class="8th"
+                 data-marks="95%"
+                 data-hobbies=""
+                 data-contact=""
+                
+                 data-img="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"
+                 aria-label="kana beragi, class 8th">
+              <img loading="lazy" alt="kana photo" src="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"/>
+              <div class="meta">
+                <strong>kana beragi</strong>
+                <span>8th • 91%</span>
+              </div>
+            </div>
+
+
+
+             <div class="student" tabindex="0"
+                 data-name="anita nagar"
+                 data-class="8th"
+                 data-marks="95%"
+                 data-hobbies=""
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=5"
+                 aria-label="anita, class 8th">
+              <img loading="lazy" alt="anita photo" src="https://i.pravatar.cc/100?img=5"/>
+              <div class="meta">
+                <strong>anita nagar</strong>
+                <span>8th • 94%</span>
+              </div>
+            </div>
+
+
+             <div class="student" tabindex="0"
+                 data-name="ansuya nagar"
+                 data-class="8th"
+                 data-marks="95%"
+                 data-hobbies=""
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=5"
+                 aria-label="ansuya, class 8th">
+              <img loading="lazy" alt="ansuya photo" src="https://i.pravatar.cc/100?img=5"/>
+              <div class="meta">
+                <strong>ansuya nagar</strong>
+                <span>8th • 94%</span>
+              </div>
+            </div>
+
+            
+             <div class="student" tabindex="0"
+                 data-name="komal nagar"
+                 data-class="8th"
+                 data-marks="95%"
+                 data-hobbies=""
+                 data-contact=""
+                 data-img="https://i.pravatar.cc/100?img=5"
+                 aria-label="Komal, class 8th">
+              <img loading="lazy" alt="Komal photo" src="https://i.pravatar.cc/100?img=5"/>
+              <div class="meta">
+                <strong>Komal nagar</strong>
+                <span>8th • 94%</span>
+              </div>
+            </div>
+
+
+
+             <div class="student" tabindex="0"
+                 data-name="manish verma"
+                 data-class="8th"
+                 data-marks="95%"
+                 data-hobbies=""
+                 data-contact=""
+                
+                 data-img="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"
+                 aria-label="manish verma, class 8th">
+              <img loading="lazy" alt="verma photo" src="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"/>
+              <div class="meta">
+                <strong>manish verma</strong>
+                <span>8th • 70%</span>
+              </div>
+            </div>
+
+             <div class="student" tabindex="0"
+                 data-name="anand verma"
+                 data-class="8th"
+                 data-marks="95%"
+                 data-hobbies=""
+                 data-contact=""
+                
+                 data-img="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"
+                 aria-label="anand verma, class 8th">
+              <img loading="lazy" alt="anand photo" src="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"/>
+              <div class="meta">
+                <strong>anand verma</strong>
+                <span>8th • 71%</span>
+              </div>
+            </div>
+
+
+
+            
+
+            <div class="student" tabindex="0"
+                 data-name="kuldeep nagar"
+                 data-class="8th"
+                 data-marks="93%"
+                 data-hobbies="Art"
+                 data-contact=""
+                 data-img="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"
+                 aria-label="kuldeep nagar, class 8th">
+              <img loading="lazy" alt="kuldeep photo" src="https://tse3.mm.bing.net/th/id/OIP.lpq19NRtl3iZ9rd125xL5AHaHa?cb=ucfimg2&pid=ImgDet&ucfimg=1&w=206&h=206&c=7&dpr=1.1&o=7&rm=3"/>
+              <div class="meta">
+                <strong>kuldeep</strong>
+                <span>8th • 93%</span>
+
+              </div>
+
+
+            </div>
+
+          </div>
+        </article>
+
+
+
+
+
+
+      </section>
+    </main>
+
+    <!-- Modal -->
+    <div id="studentModal" class="modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modalName">
+      <div class="modal-card" role="document">
+        <div class="modal-top">
+          <img id="modalImg" alt="Student photo" src="" />
+          <div class="m-meta">
+            <strong id="modalName"></strong>
+            <p class="muted" id="modalClass"></p>
+          </div>
+        </div>
+
+        <div class="modal-details" id="modalDetails">
+          <p><strong>Marks:</strong> <span id="modalMarks"></span></p>
+          <p><strong>Hobbies:</strong> <span id="modalHobbies"></span></p>
+          <p><strong>Contact:</strong> <span id="modalContact"></span></p>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn close" id="closeModal">Close</button>
+          <button class="btn call" id="callBtn" style="display:none;">
+            <i class="fas fa-phone"></i>&nbsp;Call
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="copyright">© Village Phundiya</div>
+      <div class="social-icons" aria-hidden="false">
+        <a href="https://www.linkedin.com/in/govind-nagar-307a66336" target="_blank" rel="noreferrer"><i class="fab fa-linkedin"></i></a>
+        <a href="https://www.instagram.com/itz.govind___?igsh=MTF5aHN4eDg0M2ZyMQ==" target="_blank" rel="noreferrer"><i class="fab fa-instagram"></i></a>
+        <a href="https://youtube.com" target="_blank" rel="noreferrer"><i class="fab fa-youtube"></i></a>
+        <a href="milto:govind523@gmail.com"><i class="fas fa-envelope"></i></a>
+      </div>
+    </footer>
+
+    <script>
+      // Utilities
+      const $ = (s, root = document) => root.querySelector(s);
+      const $$ = (s, root = document) => Array.from(root.querySelectorAll(s));
+
+      const searchInput = $('#searchInput');
+      const batchSelect = $('#batchSelect');
+      const batchesWrap = $('#batches');
+      const noResult = $('#noResult');
+      const modal = $('#studentModal');
+      const modalImg = $('#modalImg');
+      const modalName = $('#modalName');
+      const modalClass = $('#modalClass');
+      const modalMarks = $('#modalMarks');
+      const modalHobbies = $('#modalHobbies');
+      const modalContact = $('#modalContact');
+      const closeModal = $('#closeModal');
+      const callBtn = $('#callBtn');
+
+      // All student elements
+      const allStudents = $$('.student');
+
+      // Debounce helper
+      function debounce(fn, wait = 180){
+        let t;
+        return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); };
+      }
+
+      // Normalize text
+      const norm = s => (s || '').toString().toLowerCase();
+
+      function updateFilter(){
+        const q = norm(searchInput.value.trim());
+        const selectedBatch = batchSelect.value; // "all" or batch key
+        let anyVisible = false;
+
+        // iterate batches
+        const batches = $$('.batch');
+        batches.forEach(batch => {
+          const batchKey = batch.dataset.batch;
+          const students = $$('.student', batch);
+          let batchHas = false;
+
+          students.forEach(stu => {
+            const name = norm(stu.dataset.name);
+            const classx = norm(stu.dataset.class);
+            const hobbies = norm(stu.dataset.hobbies);
+            // search in name, class, hobbies
+            const matchesQuery = q === '' || name.includes(q) || classx.includes(q) || hobbies.includes(q);
+            const matchesBatch = (selectedBatch === 'all') || (selectedBatch === batchKey);
+
+            const visible = matchesQuery && matchesBatch;
+            stu.style.display = visible ? 'flex' : 'none';
+            if(visible) batchHas = true;
+          });
+
+          batch.style.display = batchHas ? 'block' : 'none';
+          if(batchHas) anyVisible = true;
+        });
+
+        noResult.style.display = anyVisible ? 'none' : 'block';
+      }
+
+      // attach debounced search
+      searchInput.addEventListener('input', debounce(updateFilter, 160));
+      batchSelect.addEventListener('change', updateFilter);
+
+      // toggle collapse per batch
+      $$('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.target;
+          const batch = document.querySelector(`.batch[data-batch="${key}"]`);
+          const students = $('.students', batch);
+          if(!students) return;
+          const hidden = students.style.display === 'none';
+          students.style.display = hidden ? 'grid' : 'none';
+          btn.textContent = hidden ? 'Collapse' : 'Expand';
+        });
+      });
+
+      // show modal
+      function showModalFor(student){
+        const img = student.dataset.img || '';
+        const name = student.dataset.name || 'No name';
+        const cls = student.dataset.class ? `Class: ${student.dataset.class}` : '';
+        const marks = student.dataset.marks || 'N/A';
+        const hobbies = student.dataset.hobbies || 'Not provided';
+        const contact = student.dataset.contact || 'Not provided';
+
+        modalImg.src = img;
+        modalImg.alt = `${name} photo`;
+        modalName.textContent = name;
+        modalClass.textContent = cls;
+        modalMarks.textContent = marks;
+        modalHobbies.textContent = hobbies;
+        modalContact.textContent = contact;
+
+        // show call button only if contact looks like phone or email
+        if(contact && contact !== 'Not provided'){
+          callBtn.style.display = 'inline-block';
+          callBtn.onclick = () => {
+            // if phone number numeric -> tel, else mailto
+            if(/^[+0-9().\-\s]{6,}$/.test(contact)) {
+              window.location.href = `tel:${contact}`;
+            } else if(contact.includes('@')) {
+              window.location.href = `mailto:${contact}`;
+            } else {
+              alert('Contact: ' + contact);
+            }
+          }
+        } else {
+          callBtn.style.display = 'none';
+        }
+
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        // focus close for accessibility
+        closeModal.focus();
+        // trap focus (basic)
+        document.addEventListener('keydown', keyTrapListener);
+      }
+
+      // basic focus trap: close on Escape
+      function keyTrapListener(e){
+        if(e.key === 'Escape') closeCurrentModal();
+      }
+
+      function closeCurrentModal(){
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden','true');
+        document.removeEventListener('keydown', keyTrapListener);
+      }
+
+      // click or Enter on student
+      allStudents.forEach(stu => {
+        stu.addEventListener('click', () => showModalFor(stu));
+        stu.addEventListener('keydown', (e) => {
+          if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showModalFor(stu); }
+        });
+      });
+
+      closeModal.addEventListener('click', closeCurrentModal);
+      modal.addEventListener('click', (e) => {
+        if(e.target === modal) closeCurrentModal();
+      });
+
+      // initial filter run
+      updateFilter();
+
+      // accessibility: if images fail to load, replace with placeholder
+      document.addEventListener('error', (e) => {
+        const el = e.target;
+        if(el.tagName === 'IMG'){
+          el.src = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+            `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="100%" height="100%" fill="#e6eefc"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#4173c9" font-family="Arial" font-size="14">No image</text></svg>`
+          );
+        }
+      }, true);
+
+    </script>
+  </body>
+</html>

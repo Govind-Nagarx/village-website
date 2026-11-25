@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vikas Organization</title>
+  <link rel="icon" href="image/logo.png" type="image/png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #fff;
+      --muted: #555;
+      --accent: #0048ff;
+      --gold: #ffd700;
+    }
+    body {
+      font-family: "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: #111;
+      transition: 0.4s;
+    }
+    /* NAVBAR */
+    nav {
+      background: linear-gradient(90deg, #004080, #0059b3);
+      position: sticky;
+      top: 0;
+      z-index: 2000;
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-text {
+      color: #fff;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      position: relative;
+    }
+
+    /* HAMBURGER */
+    .hamburger {
+      display: none;
+      font-size: 26px;
+      color: white;
+      background: none;
+      border: none;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        background: #004080;
+        right: 20px;
+        top: 60px;
+        padding: 10px 20px;
+        border-radius: 10px;
+        width: 150px;
+      }
+      .nav-links.show {
+        display: flex;
+      }
+      .hamburger {
+        display: block;
+      }
+    }
+
+    /* HEADER */
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    /* SEARCH & FILTER */
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .controls input,
+    .controls select {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #aaa;
+    }
+
+    .controls button {
+      background: var(--accent);
+      color: white;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* GRID */
+    .grid {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .thumb {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+
+    .card-body {
+      padding: 12px;
+      text-align: center;
+    }
+
+    .name {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .actions {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn {
+      background: white;
+      border: 1px solid #bbb;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* MODAL FIXED */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      z-index: 3000;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      animation: fadeIn 0.3s;
+    }
+
+    .modal img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+    }
+
+    .modal-info {
+      padding: 18px;
+      text-align: center;
+    }
+
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 20px;
+      background: white;
+      border-radius: 50%;
+      border: none;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 40px;
+      padding: 20px;
+      background: #002d73;
+      text-align: center;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-container">
+      <div class="logo-text">Vikas Organization</div>
+
+      <button class="hamburger" onclick="toggleMenu()">☰</button>
+
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="detail.html">About Us</a>
+        <a href="image.html">Gallery</a>
+        <a href="gavimage.html">Village</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HEADER -->
+  <div class="container">
+    <!-- <h2>If you want your photo added, call: 8839962150</h2> -->
+
+    <!-- SEARCH + FILTER -->
+    <div class="controls">
+      <input id="search" type="text" placeholder="Search name or skill..." />
+      <select id="filter">
+        <option value="all">All</option>
+        <option value="khet">Farmer</option>
+        <option value="Doctor">Doctor</option>
+        <option value="pandaji">Pandit</option>
+        <option value="Derifarm">Dairy Farm</option>
+        <option value="electrician">Electrician</option>
+        <option value="Trector">Tractor Driver</option>
+        <option value="Student">Student</option>
+        <option value="Police">Police</option>
+      </select>
+
+      <button id="reset">Reset</button>
+    </div>
+
+    <!-- GRID -->
+    <div id="grid" class="grid"></div>
+  </div>
+
+  <!-- MODAL -->
+  <div id="modal" class="modal">
+    <button class="close" onclick="modal.classList.remove('show')">X</button>
+
+    <div class="modal-card">
+      <img id="modalImg">
+      <div class="modal-info">
+        <h2 id="modalName"></h2>
+        <p id="modalRole"></p>
+        <p id="modalVillage"></p>
+        <p id="modalPhone"></p>
+        <button class="btn" id="contactBtn">Call Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2025 Vikas Organization. All Rights Reserved.
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    const profiles = [
+      
+      {id:2,name:'Om Nagar',role:'Student',tag:'Student',village:'Phundiya',phone:'8817935046',img:'image/Screenshot 2025-10-24 131115.png'},
+      {id:3,name:'Sachin Nagar',role:'Student',tag:'Student',village:'Phundiya',phone:'8269852150',img:'image/Screenshot 2025-10-24 131827.png'},
+      {id:4,name:'Goutam Nagar',role:'Student',tag:'Student',village:'Phundiya',phone:'9617080554',img:'image/goutam.jpg'},
+      {id:5,name:'Kaluram Nagar',role:'Farmer',tag:'khet',village:'Phundiya',phone:'9131101568',img:'image/Screenshot 2025-10-24 133958.png'},
+      {id:6,name:'Devraj Nagar',role:'Student 9th',tag:'Student',village:'Phundiya',phone:'8305280277',img:'image/devraj.jpg'},
+      {id:7,name:'Rahul Sahu',role:'Electrician',tag:'electrician',village:'Phundiya',phone:'8223037161',img:'image/Screenshot 2025-10-23 152453.png'},
+      {id:8,name:'Rambabu Nagar',role:'Farmer',tag:'khet',village:'Phundiya',phone:'8305280277',img:'image/rambabuu.jpg'},
+      {id:9,name:'Rajesh Nagar',role:'Farmer',tag:'khet',village:'Phundiya',phone:'9009244308',img:'image/297035.jpg'},
+      {id:1,name:'Govind Nagar',role:'Student',tag:'Student',village:'Phundiya',phone:'8839962150',img:'image/398736.jpg'},
+      {id:24,name:'shyam ',role:'Student',tag:'Student',village:'Phundiya',phone:'7000515467',img:'image/shyam.jpg'},
+      {id:10,name:'Devkaran Nagar',role:'Pandit',tag:'pandaji',village:'Phundiya',phone:'9098566996',img:'image/Screenshot 2025-10-23 160037.png'},
+      {id:11,name:'Anil Nagar',role:'Dairy Farm',tag:'Derifarm',village:'Phundiya',phone:'9770441146',img:'image/Screenshot 2025-10-23 160820.png'},
+      {id:12,name:'Tarun Nagar',role:'Student',tag:'Student',village:'Phundiya',phone:'9691851374',img:'image/Screenshot 2025-09-22 182606.png'},
+      {id:13,name:'Manoj Nagar',role:'Student',tag:'Student',village:'Phundiya',phone:'7067269685',img:'image/Screenshot 2025-09-22 183025.png'},
+      {id:14,name:'Devin Nagar',role:'All',tag:'all',village:'Phundiya',phone:'9174469537',img:'image/Screenshot 2025-10-23 154619.png'},
+      {id:15,name:'Om Nagar',role:'Student',tag:'Student',village:'Phundiya',phone:'7828639824',img:'image/Screenshot 2025-09-22 184118.png'},
+      {id:16,name:'Naveen Nagar',role:'Student',tag:'Student',village:'Phundiya',phone:'9301258710',img:'image/Screenshot 2025-09-22 194945.png'},
+      {id:17,name:'Rohit Sahu',role:'Student',tag:'Student',village:'Phundiya',phone:'9131916053',img:'image/Screenshot 2025-09-22 195603.png'},
+      {id:18,name:'Arun Nagar',role:'Tractor Driver',tag:'Trector',village:'Phundiya',phone:'8839106365',img:'image/Screenshot 2025-09-23 183147.png'},
+      {id:19,name:'Yogesh Nagar',role:'Student',tag:'Student',village:'Phundiya',phone:'7724888146',img:'image/Screenshot 2025-10-07 182234.png'},
+      {id:20,name:'Dinesh Nagar',role:'Dairy Farm',tag:'Derifarm',village:'Phundiya',phone:'6266016243',img:'image/Screenshot 2025-10-23 161246.png'},
+      {id:21,name:'Balu Nagar',role:'Tractor Driver',tag:'Trector',village:'Phundiya',phone:'8839564474',img:'image/balu1.jpg'},
+      {id:22,name:'Manish Nagar',role:'Police',tag:'Police',village:'Phundiya',phone:'8889813489',img:'image/Screenshot 2025-10-24 164920.png'},
+      {id:23,name:'Ashish Nagar',role:'Doctor',tag:'Doctor',village:'Phundiya',phone:'',img:'image/Screenshot 2025-10-24 171313.png'},
+    ];
+
+    const grid = document.getElementById("grid");
+    const search = document.getElementById("search");
+    const filter = document.getElementById("filter");
+    const reset = document.getElementById("reset");
+    const modal = document.getElementById("modal");
+    const modalImg = document.getElementById("modalImg");
+    const modalName = document.getElementById("modalName");
+    const modalRole = document.getElementById("modalRole");
+    const modalVillage = document.getElementById("modalVillage");
+    const modalPhone = document.getElementById("modalPhone");
+    const contactBtn = document.getElementById("contactBtn");
+
+    function render(list) {
+      grid.innerHTML = "";
+      list.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <img class="thumb" src="${p.img}">
+          <div class="card-body">
+            <h3 class="name">${p.name}</h3>
+            <div class="meta">${p.role} • ${p.village}</div>
+            <div class="actions">
+              <button class="btn" onclick="openModal(${p.id})">Details</button>
+              <a class="btn" href="tel:${p.phone}">Call</a>
+            </div>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
+
+    render(profiles);
+
+    function applyFilters() {
+      const q = search.value.toLowerCase();
+      const f = filter.value;
+      const res = profiles.filter(p =>
+        (p.name + p.role + p.village).toLowerCase().includes(q) &&
+        (f === "all" || p.tag === f)
+      );
+      render(res);
+    }
+
+    search.addEventListener("input", applyFilters);
+    filter.addEventListener("change", applyFilters);
+    reset.addEventListener("click", () => {
+      search.value = "";
+      filter.value = "all";
+      render(profiles);
+    });
+
+    window.openModal = id => {
+      const p = profiles.find(x => x.id === id);
+      modalImg.src = p.img;
+      modalName.textContent = p.name;
+      modalRole.textContent = "Profession: " + p.role;
+      modalVillage.textContent = "Village: " + p.village;
+      modalPhone.textContent = "Phone: " + p.phone;
+      contactBtn.onclick = () => window.location.href = "tel:" + p.phone;
+      modal.classList.add("show");
+    };
+
+    function toggleMenu() {
+      document.querySelector(".nav-links").classList.toggle("show");
+    }
+
+  </script>
+</body>
+</html>
